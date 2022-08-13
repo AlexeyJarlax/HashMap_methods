@@ -1,0 +1,16 @@
+import java.util.ArrayList;
+
+public class Practicum {
+    public static void main(String[] args) {
+        ArrayList<Double> expenses = new ArrayList<>();
+        expenses.add(120.3); // добавили трату, её индекс 0
+        expenses.add(1356.43); // добавили трату, её индекс 1
+        double myExpense = expenses.get(0); // извлекли трату 0 из списка
+        System.out.println(myExpense); // напечатали полученную трату
+    }
+}
+
+====
+
+Результат
+120.3
