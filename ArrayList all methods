@@ -1,140 +1,133 @@
-Усовершенствуйте приложение для зоопарка: добавьте возможность добавлять и удалять животных из списка, 
-а также проверять, живёт ли указанное пользователем животное в зоопарке. Вам нужно реализовать следующие команды цифрового меню приложения:
-1 — Показать список всех животных в зоопарке.
-2 — Добавить животное в список.
-3 — Удалить животное из списка.
-Учтите, что удалить элемент из списка можно только в том случае, если он не пуст.
-4 — Очистить список.
-Логика при очистке списка должна быть следующей: если список пуст, то делать ничего не нужно, в обратном случае — удалить все элементы.
-5 — Проверить, есть ли в зоопарке указанное пользователем животное.
+
+В хеш-таблице customersOrders класса OrdersManager собрана информация о клиентах зоомагазина (это ключи) и их заказах. Дополните код методов:
+В printAllOrders() и getOrdersSum(), которые печатают список всех заказов и их возвращают общую сумму, вызовите нужные методы HashMap.
+В методе printCustomerOrders(String customerName) перед печатью заказов конкретного клиента добавьте проверку наличия его имени в таблице. 
+Это нужно, чтобы избежать ошибки ссылки на null.
+Метод getMaxOrderCustomerName() должен возвращать имя клиента, который потратил в зоомагазине больше всего. 
+Переменные для хранения имени клиента и максимальной суммы заказов мы объявили и инициализировали за вас. 
+Числовое переменной присвоили 0, а строковой — пустую строку "". Вам нужно дописать логику работы метода. 
+Вы уже не раз искали максимум в массивах или списках. Здесь получится очень похоже!
+Метод removeUnprofitableOrders должен удалять из таблицы клиентов, сумма заказов которых строго меньше 5000.
 
 ====
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
 public class Praktikum {
-
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<String> animals = new ArrayList<>();
-        animals.add("Шиншилла");
-        animals.add("Крокодил");
-        animals.add("Лев");
-        animals.add("Медведь");
-        animals.add("Слон");
+        OrdersManager ordersManager = new OrdersManager();
 
-        while (true) {
-            printMenu();
-            int command = scanner.nextInt();
-            if (command == 1) {
-                System.out.println("Сейчас в зоопарке можно увидеть " + animals.size()  + " животных:");
-                for (String ani : animals) {
-            System.out.println(ani); // Напечатайте животных
-                }
-            } else if (command == 2) {
-                System.out.println("Какое животное хотите добавить?");
-                String animal = scanner.next();
-                animals.add(animal);
-            } else if (command == 3) {
-                System.out.println("Какое животное нужно удалить?");
-                String animal = scanner.next();
-                animals.remove(animal); // Удалите животное, если список не пуст
-            } else if (command == 4) {
-                animals.clear();
-                System.out.println("Все животные перевезены в другой зоопарк. Список пуст.");
-            } else if (command == 5) {
-                System.out.println("Какое животное вы хотите увидеть в зоопарке?");
-                String animal = scanner.next();
-                 boolean gdezver = animals.contains(animal); // Проверяем наличие элемента
-                    if (gdezver == true) {
-                    System.out.println(animal + " на месте! Приходите посмотреть.");
-                    } else {
-                    System.out.println("Такого животного сейчас нет в нашем зоопарке.");
-                    }
-            } else {
-                break;
-            }
+        ordersManager.printAllOrders();
+        System.out.println("Всего заказов на сумму: " + ordersManager.getOrdersSum());
+
+        String maxOrderCustomerName = ordersManager.getMaxOrderCustomerName();
+        System.out.println("Самая большая сумма заказов у " + maxOrderCustomerName);
+        ordersManager.printCustomerOrders(maxOrderCustomerName);
+
+        ordersManager.removeUnprofitableOrders();
+    }
+}
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+public class OrdersManager {
+    HashMap<String, ArrayList<Double>> customersOrders;
+    public OrdersManager() {
+        customersOrders = new HashMap<>();
+        ArrayList<Double> orders = new ArrayList<>();
+        orders.add(154.43);
+        orders.add(5453.98);
+        orders.add(8776.65);
+        customersOrders.put("Иван И.", orders);
+        orders = new ArrayList<>();
+        orders.add(25343.54);
+        orders.add(420.50);
+        customersOrders.put("Ольга С.", orders);
+        orders = new ArrayList<>();
+        orders.add(325.90);
+        customersOrders.put("Александр Т.", orders);
+        orders = new ArrayList<>();
+        orders.add(253.54);
+        orders.add(420.50);
+        customersOrders.put("Александр Р.", orders);
+        orders = new ArrayList<>();
+        orders.add(780.54);
+        orders.add(420.50);
+        orders.add(36343.54);
+        orders.add(2000.50);
+        customersOrders.put("Екатерина О.", orders);
+    }
+    void printAllOrders() {
+        for (String name : customersOrders.keySet()) { // Цикл должен пройтись по ключам
+            System.out.println("Заказы " + name + ":");
+            ArrayList<Double> value = customersOrders.get(name);
+            System.out.println(value);
         }
     }
-
-    public static void printMenu() {
-        System.out.println("1 - Показать список животных в зоопарке.");
-        System.out.println("2 - Добавить животное в список.");
-        System.out.println("3 - Удалить животное из списка.");
-        System.out.println("4 - Очистить список.");
-        System.out.println("5 - Проверить, есть ли в зоопарке животное.");
-        System.out.println("Любая другая цифра - Выйти из приложения.");
-	    }
+    double getOrdersSum() {
+        double sum = 0;
+        for (ArrayList<Double> orders : customersOrders.values()) { // Здесь должен быть обход по значениям
+            for (double orderPrice : orders) {
+                sum += orderPrice;
+            }
+        }
+        return sum;
+    }
+    void printCustomerOrders(String customerName) {
+        if (customersOrders.containsKey(customerName)) { // Проверьте, есть ли указанный ключ в таблице
+            System.out.println("Заказы " + customerName + ":");
+            System.out.println(customersOrders.get(customerName));
+        }
+    }
+    String getMaxOrderCustomerName() {
+        double maxOrder = 0;
+        String customerName = "";
+        for (String name : customersOrders.keySet()) { // Допишите логику работы метода
+         for (Double max : customersOrders.get(name)){
+             if (max > maxOrder) {
+                 maxOrder = max;
+                 customerName = name;
+             }
+         }
+        }
+            return customerName;
+    }
+    void removeUnprofitableOrders() {
+        ArrayList<String> names = new ArrayList<>(); // Создайте список клиентов с заказами меньше 5000
+        // Наполните список names
+        for (String name : customersOrders.keySet()) {
+            double ordersSum = 0;
+            for (Double ord : customersOrders.get(name)){
+                ordersSum+=ord;
+            }
+            if (ordersSum < 5000) {
+                names.add(name);
+            }
+        }
+            for (String name : names){
+                if (customersOrders.containsKey(name)){
+                    customersOrders.remove(name);
+                    System.out.println("Клиента " + name + " больше нет в таблице.");
+                }
+            } // Удалите из хеш-таблицы тех, чьи расходы не превышают 5000
+        }
 }
 
 ====
 
 Вывод
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-2
-Какое животное хотите добавить?
-Тушканчик1
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-1
-Сейчас в зоопарке можно увидеть 6 животных:
-Шиншилла
-Крокодил
-Лев
-Медведь
-Слон
-Тушканчик1
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-3
-Какое животное нужно удалить?
-Медведь
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-1
-Сейчас в зоопарке можно увидеть 5 животных:
-Шиншилла
-Крокодил
-Лев
-Слон
-Тушканчик1
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-4
-Все животные перевезены в другой зоопарк. Список пуст.
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
-1
-Сейчас в зоопарке можно увидеть 0 животных:
-1 - Показать список животных в зоопарке.
-2 - Добавить животное в список.
-3 - Удалить животное из списка.
-4 - Очистить список.
-5 - Проверить, есть ли в зоопарке животное.
-Любая другая цифра - Выйти из приложения.
+Заказы Александр Т.:
+[325.9]
+Заказы Александр Р.:
+[253.54, 420.5]
+Заказы Иван И.:
+[154.43, 5453.98, 8776.65]
+Заказы Екатерина О.:
+[780.54, 420.5, 36343.54, 2000.5]
+Заказы Ольга С.:
+[25343.54, 420.5]
+Всего заказов на сумму: 80694.12
+Самая большая сумма заказов у Екатерина О.
+Заказы Екатерина О.:
+[780.54, 420.5, 36343.54, 2000.5]
+Клиента Александр Т. больше нет в таблице.
+Клиента Александр Р. больше нет в таблице.
