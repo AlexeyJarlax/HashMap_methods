@@ -1,2 +1,3 @@
-# ArrayList_methods
-Методы для работы с ArrayList
+# HashMap_methods
+Методы для работы с HashMap
+
